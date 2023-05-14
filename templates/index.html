@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <title>AITA app</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <form action="/" id="story_form" method="POST" style="margin: 20px">
+            <h3>Write your story here!</h3>
+            <div class="form-floating">
+              <textarea
+                id="formTitle"
+                placeholder="Title"
+                class="form-control"
+                style="resize: none; height: 80px"
+                name="title"
+                form="story_form"
+              >
+{{title}}</textarea
+              >
+              <label class="form-label" for="formTitle">Enter a title</label>
+            </div>
+            <br />
+            <div class="form-floating">
+              <textarea
+                id="formStory"
+                placeholder="Story"
+                class="form-control"
+                style="resize: none; height: 360px"
+                maxlength = "1200"
+                name="story"
+                form="story_form"
+              >
+{{story}}</textarea
+              >
+              <div id="the-count" style=" float: right;
+              padding: 0.1rem 0 0 0;
+              font-size: 0.875rem;">
+                <span id="current">0</span>
+                <span id="maximum">/ 1200</span>
+              </div>
+              <label class="form-label" for="formStory">Enter a story</label>
+            </div>
+
+            <br />
+            <button class="btn btn-primary" type="submit" onclick="loading()">Submit</button>
+            <button class="btn btn-danger" type="button" onClick="clearTitle()">Clear title</button>
+            <button class="btn btn-danger" type="button" onClick="clearStory()">Clear story</button>
+            <button class="btn btn-danger" type="reset">Clear both</button>
+
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+              HELP
+            </button>
+            <br />
+            <br />
+            <button class="btn btn-success" type="button" onClick="fetchScenario()">Random scenario</button>
+
+
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">How to interact with the system</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    The AI system can be found on the main page of the platform accessed through the link provided. You can interact with it through the following steps:&nbsp;
+<ol>
+    <li>Write your <em>story&nbsp;</em>and a&nbsp;<em>title</em> for your story in the space provided on the web page, on the&nbsp;<strong>left</strong>.&nbsp;</li>
+    <li>On the&nbsp;<strong>right,&nbsp;</strong>there are three main sections as part of the main&nbsp;<strong>results</strong>:&nbsp;<em><b>VERDICT, EXPLANATION</b>&nbsp;</em>and&nbsp;<strong>RECOMMENDATION.&nbsp;</strong>These blocks will be initially empty.</li>
+    <li>After writing your story and title, press the&nbsp;<strong>Submit&nbsp;</strong>button and wait. A spinner will be displayed on the&nbsp;<strong>right</strong> while the request is being processed.</li>
+    <li>During this time, the AI will assess the scenario and classify it into one of the four verdicts, which will be displayed in the&nbsp;<em>VERDICT&nbsp;</em>section. The possible verdicts are the following:<ol>
+            <li><em>Not The Asshole -&nbsp;</em>you are <strong>NOT</strong> considered the asshole, given the context of your story (the AI&nbsp;<strong>agrees&nbsp;</strong>with<strong>&nbsp;you</strong>)</li>
+            <li><em>You The Asshole -&nbsp;</em>you&nbsp;<strong>ARE</strong> considered the asshole, given the context of your story (the AI&nbsp;<strong>disagrees</strong> with&nbsp;<strong>you</strong>)</li>
+            <li><em>Everyone Sucks Here -&nbsp;</em><strong>EVERYONE</strong> that appears in the story is considered the asshole, including you and the person/s involved in your story (the AI&nbsp;<strong>disagrees</strong> with&nbsp;<strong>everyone</strong>)</li>
+            <li><em>No Assholes Here. -&nbsp;</em><strong>NO ONE&nbsp;</strong>that appears in the story is considered the asshole, including you and the person/s involved in your story (the AI&nbsp;<strong>agrees&nbsp;</strong>with&nbsp;<strong>everyone</strong>)</li>
+        </ol>
+    </li>
+    <li>The AI will also output an&nbsp;<em><b>EXPLANATION&nbsp;</b></em>related to the verdict, explaining why they have chosen this verdict.</li>
+    <li>Finally, the AI will give a&nbsp;<em><b>RECOMMENDATION</b>&nbsp;</em>related to the whole story - it will try to give you some advice given the situation.</li>
+</ol>              </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </form>
+        </div>
+
+        <div class="col" style="margin: 20px">
+          <h3>See results below!</h3>
+
+          <div class="spinner-border" id="loading" role="status" hidden>
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <div id = "results">
+            <div class="card card-body">
+              <b>VERDICT:</b> {{verdict}}
+            </div>
+            <br />
+            <div class="card card-body">
+              <b>EXPLANATION:</b> {{explanation}}
+            </div>
+            <br />
+            <div class="card card-body">
+              <b>RECOMMENDATION:</b> {{recommendation}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>  
+    <script type="text/javascript" src="{{url_for('static', filename='layout_utils.js')}}"></script>
+  </body>
+</html>
